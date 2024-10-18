@@ -1,0 +1,20 @@
+---
+- name: Load var file with package names based on the OS type
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}_{{ ansible_distribution_release }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Install pip3
+  ansible.builtin.package:
+    name: "{{ python3_package_names }}"
+
+- name: Install pip2
+  ansible.builtin.package:
+    name: "{{ python2_package_names }}"
+  when: pip_install_pip2
